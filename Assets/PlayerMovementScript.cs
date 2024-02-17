@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMovementScript : MonoBehaviour
 {
     private Rigidbody2D rig;
+    private CapsuleCollider2D col;
     private float horizontal;
     private bool grounded = false;
 
@@ -20,6 +21,7 @@ public class PlayerMovementScript : MonoBehaviour
     void Start()
     {
         rig = gameObject.GetComponent<Rigidbody2D>();
+        col = gameObject.GetComponent<CapsuleCollider2D>();
     }
 
     // Update is called once per frame
@@ -39,7 +41,7 @@ public class PlayerMovementScript : MonoBehaviour
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 a = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y).normalized;
 
-            GameObject bullet = Instantiate(bulletPrefab, transform.position + a * bulletOffset, Quaternion.identity);
+            GameObject bullet = Instantiate(bulletPrefab, transform.position + col.offset.y * Vector3.up + a * bulletOffset, Quaternion.identity);
             bullet.GetComponent<Rigidbody2D>().velocity = a * bulletSpeed;
             Destroy(bullet, 5);
         }
