@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 
 public class PlayerMovementScript : MonoBehaviour
 {
     private Rigidbody2D rig;
     private CapsuleCollider2D col;
+    private Animator anim;
+    private SpriteRenderer rend;
+
     private float horizontal;
     private bool grounded = false;
+    private bool isRunning = false;
 
     public float speed = 3f;
     public float jumpSpeed = 8f;
@@ -22,6 +27,8 @@ public class PlayerMovementScript : MonoBehaviour
     {
         rig = gameObject.GetComponent<Rigidbody2D>();
         col = gameObject.GetComponent<CapsuleCollider2D>();
+        anim = gameObject.GetComponentInChildren<Animator>();
+        rend = gameObject.GetComponentInChildren<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -29,7 +36,14 @@ public class PlayerMovementScript : MonoBehaviour
     {
         horizontal = Mathf.Lerp(horizontal, Input.GetAxisRaw("Horizontal") * speed, 0.3f);
 
+        isRunning = Mathf.Abs(horizontal) > 0.05f;
+
+        anim.SetBool("isRunning", isRunning);
+
+        if (isRunning) rend.flipX = Mathf.Sign(horizontal) != 1f;
+
         grounded = isGrounded();
+        anim.SetBool("isJumping", !grounded);
 
         if (grounded && Input.GetKeyDown(KeyCode.Space))
         {
